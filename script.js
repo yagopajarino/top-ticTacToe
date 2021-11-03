@@ -49,35 +49,63 @@ const gameBoard = (() => {
 })()
 
 const Player = (name) => {
-    let points = 1;
+    let points = [[]];
     const getName = () => name;
     const getPoints = () => points;
-    const addPoints = (x) => points *= x;
+    const addPoints = (x) => {
+        if(points[0].length < 3){
+            points[0].push(x)
+        }
+        else {
+            console.log(points)
+            let a = points[0]
+            a.push(x)
+            for(let y = 0; y < a.length; y++){
+                let n = a.slice(0,y).concat(a.slice(y+1,a.length))
+                points.push(n)
+            }
+            console.log(points)
+        }
+    }
 
     return {getName, getPoints, addPoints}
 }
 
 const gameController = (() => {
     const checkWinner = (player) => {
-        let winners = [2*4*8,3*9*27,5*25*125,2*3*5,4*9*25,8*27*125,2*9*125,27*9*5]
-        let f = winners.find( w => player.getPoints() % w == 0)
-        if (f !== undefined){
-            let tablero = document.querySelector(".tabContainer")
-            let div = document.createElement("div")
-            let p = document.createElement("div")
-            p.textContent=`${player.getName()} Wins!`
-            div.appendChild(p)
-            tablero.appendChild(div)
-            let tds = document.querySelectorAll("td")
-            tds.forEach(td => {
-                td.classList.toggle("finished")
+        let winners = [2*4*8,3*9*27,5*25*125,2*3*5,4*9*25,8*27*125,2*9*125,8*9*5]
+        let points = player.getPoints()
+        let f = false
+        points.forEach(p => {
+            winners.forEach(w => {
+                let c = p.reduce((n,q) => n*q)
+                if(c == w){
+                    f = true
+                }
             });
-            let refreshBtn = document.createElement("button")
-            refreshBtn.textContent = "Restart"
-            tablero.appendChild(refreshBtn)
-            refreshBtn.addEventListener("click", restart)
+        });
+        if (f){
+            let wintext = `${player.getName()} wins!`
+            displayResult(wintext)            
         }
         return false
+    }
+
+    const displayResult = (text) => {
+        let tablero = document.querySelector(".tabContainer")
+        let div = document.createElement("div")
+        let p = document.createElement("div")
+        p.textContent=`${text}`
+        div.appendChild(p)
+        tablero.appendChild(div)
+        let tds = document.querySelectorAll("td")
+        tds.forEach(td => {
+            td.classList.toggle("finished")
+        });
+        let refreshBtn = document.createElement("button")
+        refreshBtn.textContent = "Restart"
+        tablero.appendChild(refreshBtn)
+        refreshBtn.addEventListener("click", restart)
     }
 
     let moveCounts = 0
@@ -96,6 +124,9 @@ const gameController = (() => {
             }
             moveCounts ++
             e.target.classList.toggle("selected")
+            if(moveCounts == 9){
+                displayResult("Game tied")
+            }
         }
     }
 
