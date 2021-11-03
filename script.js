@@ -2,20 +2,28 @@ const gameBoard = (() => {
     const display = () => {
         let body = document.querySelector("body")
         let oldTablero = document.querySelector(".tabContainer")
+        let mdiv = document.querySelector(".messageDiv")
         let divTablero = document.createElement("div")
         divTablero.classList.toggle("tabContainer")
         if (oldTablero != null) {
             oldTablero.remove()
         }
 
+        if (mdiv != null) {
+            mdiv.remove()
+        }
+
         let d1 = document.createElement("div")
+        d1.classList.toggle("inputDiv")
         let n1 = document.createElement("input")
         n1.id = "name1"
-        n1.value = p1 == undefined ? "player one name" : p1.getName()
+        n1.value = p1 == undefined ? "Player one" : p1.getName()
+        n1.addEventListener("click", n1 => n1.target.value="")
 
         let n2 = document.createElement("input")
         n2.id = "name2"
-        n2.value = p2 == undefined ? "player two name" : p2.getName()
+        n2.value = p2 == undefined ? "Player two" : p2.getName()
+        n2.addEventListener("click", n2 => n2.target.value="")
 
         d1.appendChild(n1)
         d1.appendChild(n2)
@@ -33,12 +41,23 @@ const gameBoard = (() => {
             }
         })
 
+        let btnDiv = document.createElement("div")
+        btnDiv.classList.toggle("btnDiv")
         let beginBtn = document.createElement("button")
         beginBtn.textContent = "Start Game"
         beginBtn.classList.toggle("beginBtn")
+        btnDiv.appendChild(beginBtn)
+
+        let refreshBtn = document.createElement("button")
+        refreshBtn.classList.toggle("refBtn")
+        refreshBtn.textContent = "Restart"
+        btnDiv.appendChild(refreshBtn)
+        refreshBtn.hidden = true
+        refreshBtn.addEventListener("click", restart)
+        
 
         divTablero.appendChild(table)
-        divTablero.appendChild(beginBtn)
+        divTablero.appendChild(btnDiv)
         body.appendChild(divTablero)
     };
 
@@ -57,14 +76,12 @@ const Player = (name) => {
             points[0].push(x)
         }
         else {
-            console.log(points)
-            let a = points[0]
+            let a = [...points[0]]
             a.push(x)
             for(let y = 0; y < a.length; y++){
                 let n = a.slice(0,y).concat(a.slice(y+1,a.length))
                 points.push(n)
             }
-            console.log(points)
         }
     }
 
@@ -72,7 +89,7 @@ const Player = (name) => {
 }
 
 const gameController = (() => {
-    const checkWinner = (player) => {
+    const checkWinner = (player, k) => {
         let winners = [2*4*8,3*9*27,5*25*125,2*3*5,4*9*25,8*27*125,2*9*125,8*9*5]
         let points = player.getPoints()
         let f = false
@@ -88,24 +105,24 @@ const gameController = (() => {
             let wintext = `${player.getName()} wins!`
             displayResult(wintext)            
         }
+        else if(k == 8){
+            displayResult("Game tied!")
+        }
         return false
     }
 
     const displayResult = (text) => {
-        let tablero = document.querySelector(".tabContainer")
+        let body = document.querySelector("body")
         let div = document.createElement("div")
+        div.classList.toggle("messageDiv")
         let p = document.createElement("div")
         p.textContent=`${text}`
         div.appendChild(p)
-        tablero.appendChild(div)
+        body.appendChild(div)
         let tds = document.querySelectorAll("td")
         tds.forEach(td => {
             td.classList.toggle("finished")
         });
-        let refreshBtn = document.createElement("button")
-        refreshBtn.textContent = "Restart"
-        tablero.appendChild(refreshBtn)
-        refreshBtn.addEventListener("click", restart)
     }
 
     let moveCounts = 0
@@ -115,18 +132,15 @@ const gameController = (() => {
             if (moveCounts % 2 === 0){
                 e.target.textContent = "X"
                 p1.addPoints(points)
-                checkWinner(p1)
+                checkWinner(p1, moveCounts)
             }
             else {
                 e.target.textContent = "O"
                 p2.addPoints(points)
-                checkWinner(p2)
+                checkWinner(p2, moveCounts)
             }
             moveCounts ++
             e.target.classList.toggle("selected")
-            if(moveCounts == 9){
-                displayResult("Game tied")
-            }
         }
     }
 
@@ -137,6 +151,8 @@ const gameController = (() => {
         p2 = Player(name2.value)
         let b = document.querySelector(".beginBtn")
         b.hidden = true
+        let r = document.querySelector(".refBtn")
+        r.hidden = false
         let tds = document.querySelectorAll("td")
         tds.forEach(td => {
         td.addEventListener("click", gameController.play.bind(this))
@@ -155,5 +171,3 @@ function restart() {
     let b = document.querySelector(".beginBtn")
     b.addEventListener("click", gameController.startGame)
 }
-
-

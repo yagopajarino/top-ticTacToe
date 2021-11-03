@@ -1,5 +1,58 @@
+* {
+    margin: 0;
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    align-content: center;
+    height: 100vh;
+    background-color: rgb(255, 239, 219)
+}
+
+h1 {
+    margin: 0 0 25px 0;
+    padding: 20px 0;
+    font-size: 70px;
+    width: 100%;
+    text-align: center;
+    background-color: rgb(255, 216, 164);
+    border-bottom: 2px solid rgb(255, 192, 109);
+}
+
+.tabContainer {
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 400px;
+    min-height: 500px;
+}
+
+input {
+    height: 1em;
+    width: 40%;
+    text-align: center;
+    padding: 12px;
+    margin: 5px 0px;
+    font-size: 25px;
+    border-width: 1px;
+    border-color: rgb(255, 192, 109);
+    background-color: #FFFFFF;
+    color: #000000;
+    border-style: solid;
+    border-radius: 20px;   
+}
+.css-input:focus {
+    outline:none;
+}
+
+.inputDiv {
+    display: flex;
+    justify-content: space-between;
 }
 
 td {
@@ -7,9 +60,44 @@ td {
     width: 80px;
     height: 80px;
     text-align: center;
+    border: 5px solid rgb(255, 192, 109)
+}
+
+.selected {
+    font-size: 60px;
 }
 
 table {
     border-collapse: collapse;
+    height: 400px;
+    border: 6px solid rgb(255, 239, 219);
 }
 
+.btnDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+button {
+	background-color:transparent;
+	border-radius:28px;
+	border:1px solid rgb(255, 192, 109);
+	cursor:pointer;
+	color:black;
+	font-family:Arial;
+	font-size:17px;
+	padding:16px 31px;
+	text-decoration:none;
+}
+button:hover {
+	background-color:rgb(189, 108, 3);
+}
+button:active {
+	position:relative;
+	top:1px;
+}
+
+input:focus-visible {
+    outline-color: rgb(255, 192, 109);
+}
